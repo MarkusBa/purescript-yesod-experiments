@@ -2420,8 +2420,8 @@ var main = (function () {
         return Data_String.joinWith("")(Data_Array.map(Network_HTTP_Client.runChunk)(_0));
     };
     var purescript_org = {
-        host: "localhost:3000", 
-        path: "/quadrest/1"
+        host: "jsonplaceholder.typicode.com", 
+        path: "/users"
     };
     var getResponseText = function (req) {
         return Prelude["<$>"](Control_Monad_Cont_Trans.functorContT(Control_Monad_Eff.monadEff))(responseToString)(Network_HTTP_Client.getAll(req));

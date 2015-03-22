@@ -14,6 +14,7 @@ foreign import data HTTP :: !
 
 newtype Request = Request
   { host :: String
+  , port :: String
   , path :: String
   }
 

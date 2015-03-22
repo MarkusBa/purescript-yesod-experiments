@@ -19,6 +19,7 @@ main = runContT (getResponseText purescript_org) trace
   
   purescript_org :: Request
   purescript_org = Request 
-    { host: "localhost:3000"
+    { host: "localhost"
+    , port: "3000"
     , path: "/quadrest/1" 
     }
