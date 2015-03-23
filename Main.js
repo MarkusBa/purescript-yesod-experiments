@@ -5855,16 +5855,16 @@ module.exports = {
 "use strict";
 var Prelude = require("Prelude");
 var Data_JSON = require("Data.JSON");
-var Data_Array = require("Data.Array");
-var Data_Array_Unsafe = require("Data.Array.Unsafe");
 var Control_Monad_Eff_DOM = require("Control.Monad.Eff.DOM");
-var Data_Map = require("Data.Map");
-var Control_Monad_Eff = require("Control.Monad.Eff");
 var Network_HTTP_Client = require("Network.HTTP.Client");
 var Data_String = require("Data.String");
+var Data_Array = require("Data.Array");
 var Control_Monad_Cont_Trans = require("Control.Monad.Cont.Trans");
 var Debug_Trace = require("Debug.Trace");
+var Control_Monad_Eff = require("Control.Monad.Eff");
+var Data_Map = require("Data.Map");
 var Data_Maybe = require("Data.Maybe");
+var Data_Array_Unsafe = require("Data.Array.Unsafe");
 var Data_Either = require("Data.Either");
 var Quad = (function () {
     function Quad(value0) {
@@ -5875,45 +5875,59 @@ var Quad = (function () {
     };
     return Quad;
 })();
-
-/**
- * Cannot unify Control.Monad.Eff.DOM.Node with Prelude.Unit.
- * updateUI :: Maybe (M.Map String String)  -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
- */
-var updateUI = function (quad) {
+var quadToJSON = new Data_JSON.ToJSON(function (_12) {
+    return Data_JSON.object([ Data_JSON[".="](Data_JSON.stringToJSON)("subject")(_12.value0.subject), Data_JSON[".="](Data_JSON.stringToJSON)("predicate")(_12.value0.predicate), Data_JSON[".="](Data_JSON.stringToJSON)("object")(_12.value0.object) ]);
+});
+var quadS = function (_8) {
+    return _8.value0.subject;
+};
+var quadP = function (_9) {
+    return _9.value0.predicate;
+};
+var quadO = function (_10) {
+    return _10.value0.object;
+};
+var updateUI = function (quadM) {
     return function __do() {
-        var _5 = Control_Monad_Eff_DOM.querySelector(".container")();
-        if (_5 instanceof Data_Maybe.Just) {
-            var list = (function () {
-                if (quad instanceof Data_Maybe.Just) {
-                    return Data_Map.values(quad.value0);
+        var _7 = Control_Monad_Eff_DOM.querySelector(".container")();
+        if (_7 instanceof Data_Maybe.Just) {
+            var quad = (function () {
+                if (quadM instanceof Data_Maybe.Just) {
+                    return quadM.value0;
                 };
-                if (quad instanceof Data_Maybe.Nothing) {
-                    return [  ];
+                if (quadM instanceof Data_Maybe.Nothing) {
+                    return new Quad({
+                        subject: "s", 
+                        predicate: "p", 
+                        object: "o"
+                    });
                 };
                 throw new Error("Failed pattern match");
             })();
-            var _4 = Control_Monad_Eff_DOM.createElement("ul")();
-            Control_Monad_Eff.foreachE(list)(function (element) {
+            var _6 = Control_Monad_Eff_DOM.createElement("ul")();
+            return (function () {
+                var sub = quadS(quad);
+                var pre = quadP(quad);
+                var obj = quadO(quad);
                 return function __do() {
-                    var _3 = Prelude[">>="](Control_Monad_Eff.bindEff)(Control_Monad_Eff_DOM.createElement("li"))(Control_Monad_Eff_DOM.setText(element))();
-                    Control_Monad_Eff_DOM.appendChild(_3)(_4)();
-                    return Prelude.unit;
+                    var _5 = Prelude[">>="](Control_Monad_Eff.bindEff)(Control_Monad_Eff_DOM.createElement("li"))(Control_Monad_Eff_DOM.setText(sub))();
+                    Control_Monad_Eff_DOM.appendChild(_5)(_6)();
+                    var _4 = Prelude[">>="](Control_Monad_Eff.bindEff)(Control_Monad_Eff_DOM.createElement("li"))(Control_Monad_Eff_DOM.setText(pre))();
+                    Control_Monad_Eff_DOM.appendChild(_4)(_6)();
+                    var _3 = Prelude[">>="](Control_Monad_Eff.bindEff)(Control_Monad_Eff_DOM.createElement("li"))(Control_Monad_Eff_DOM.setText(obj))();
+                    Control_Monad_Eff_DOM.appendChild(_3)(_6)();
+                    return Control_Monad_Eff_DOM.appendChild(_6)(_7.value0)();
                 };
-            })();
-            return Control_Monad_Eff_DOM.appendChild(_4)(_5.value0)();
+            })()();
         };
         throw new Error("Failed pattern match");
     };
 };
-var quadToJSON = new Data_JSON.ToJSON(function (_7) {
-    return Data_JSON.object([ Data_JSON[".="](Data_JSON.stringToJSON)("subject")(_7.value0.subject), Data_JSON[".="](Data_JSON.stringToJSON)("predicate")(_7.value0.predicate), Data_JSON[".="](Data_JSON.stringToJSON)("object")(_7.value0.object) ]);
-});
-var quadFromJSON = new Data_JSON.FromJSON(function (_6) {
-    if (_6 instanceof Data_JSON.JObject) {
-        return Prelude[">>="](Data_Either.bindEither)(Data_JSON[".:"](Data_JSON.stringFromJSON)(_6.value0)("subject"))(function (_2) {
-            return Prelude[">>="](Data_Either.bindEither)(Data_JSON[".:"](Data_JSON.stringFromJSON)(_6.value0)("predicate"))(function (_1) {
-                return Prelude[">>="](Data_Either.bindEither)(Data_JSON[".:"](Data_JSON.stringFromJSON)(_6.value0)("object"))(function (_0) {
+var quadFromJSON = new Data_JSON.FromJSON(function (_11) {
+    if (_11 instanceof Data_JSON.JObject) {
+        return Prelude[">>="](Data_Either.bindEither)(Data_JSON[".:"](Data_JSON.stringFromJSON)(_11.value0)("subject"))(function (_2) {
+            return Prelude[">>="](Data_Either.bindEither)(Data_JSON[".:"](Data_JSON.stringFromJSON)(_11.value0)("predicate"))(function (_1) {
+                return Prelude[">>="](Data_Either.bindEither)(Data_JSON[".:"](Data_JSON.stringFromJSON)(_11.value0)("object"))(function (_0) {
                     return Prelude["return"](Data_Either.monadEither)(new Quad({
                         subject: _2, 
                         predicate: _1, 
@@ -5926,8 +5940,8 @@ var quadFromJSON = new Data_JSON.FromJSON(function (_6) {
     return Data_JSON.fail("quad parse failed.");
 });
 var main = (function () {
-    var responseToString = function (_8) {
-        return Data_String.joinWith("")(Data_Array.map(Network_HTTP_Client.runChunk)(_8));
+    var responseToString = function (_13) {
+        return Data_String.joinWith("")(Data_Array.map(Network_HTTP_Client.runChunk)(_13));
     };
     var purescript_org = {
         host: "localhost", 
@@ -5938,28 +5952,20 @@ var main = (function () {
         return Prelude["<$>"](Control_Monad_Cont_Trans.functorContT(Control_Monad_Eff.monadEff))(responseToString)(Network_HTTP_Client.getAll(req));
     };
     return Control_Monad_Cont_Trans.runContT(getResponseText(purescript_org))(function (response) {
-        var quad = Data_JSON.decode(Data_JSON.mapFromJSON(Data_JSON.stringFromJSON))(response);
+        var quad = Data_JSON.decode(quadFromJSON)(response);
         return function __do() {
             updateUI(quad)();
             return Debug_Trace.trace("finished manipulating ui")();
         };
     });
 })();
-var lengthl = function (arr) {
-    var _26 = Data_Array["null"](arr);
-    if (_26) {
-        return 0;
-    };
-    if (!_26) {
-        return 1 + lengthl(Data_Array_Unsafe.tail(arr));
-    };
-    throw new Error("Failed pattern match");
-};
 module.exports = {
     Quad: Quad, 
     main: main, 
     updateUI: updateUI, 
-    lengthl: lengthl, 
+    quadO: quadO, 
+    quadP: quadP, 
+    quadS: quadS, 
     quadFromJSON: quadFromJSON, 
     quadToJSON: quadToJSON
 };

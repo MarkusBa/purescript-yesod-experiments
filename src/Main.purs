@@ -29,31 +29,37 @@ instance quadToJSON :: ToJSON Quad where
     toJSON (Quad { subject = b1, predicate = b2, object = b3 }) =
         object ["subject" .= b1, "predicate" .= b2, "object" .= b3]
 
-lengthl :: forall a. [a] -> Number
-lengthl arr =
-    if null arr
-    then 0
-    else 1 + lengthl (tail arr)
+quadS (Quad {subject = subject, predicate = predicate, object = object}) =
+  subject
+quadP (Quad {subject = subject, predicate = predicate, object = object}) =
+  predicate
+quadO (Quad {subject = subject, predicate = predicate, object = object}) =
+  object
 
---Cannot unify Control.Monad.Eff.DOM.Node with Prelude.Unit.
---updateUI :: Maybe (M.Map String String)  -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
-updateUI quad = do
+updateUI quadM = do
     Just container <- querySelector ".container"
 
-    let list = case quad of
-         Just quad -> M.values quad
-         Nothing -> []
+    let quad = case quadM of
+         Just quadI -> quadI
+         Nothing -> Quad {subject: "s", predicate: "p", object: "o"}
     ul <- createElement "ul"
-    foreachE list $ \element -> do
-      li <- createElement "li" >>= setText element
-      li `appendChild` ul
-      return unit
+
+    let sub = quadS quad
+    let pre = quadP quad
+    let obj = quadO quad
+
+    li <- createElement "li" >>= setText sub
+    li `appendChild` ul
+    li2 <- createElement "li" >>= setText pre
+    li2 `appendChild` ul      
+    li3 <- createElement "li" >>= setText obj
+    li3 `appendChild` ul
 
     ul `appendChild` container
  
 
 main = runContT (getResponseText purescript_org) $ \response -> do
-  let quad = decode response :: Maybe (M.Map String String)
+  let quad = decode response :: Maybe Quad
   updateUI quad
   trace "finished manipulating ui"
 
