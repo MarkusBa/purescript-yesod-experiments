@@ -28,9 +28,9 @@ instance u22FromJSON :: FromJSON u225 where
 
 
 main = runContT (getResponseText purescript_org) $ \response -> do
-  let text = decode response :: Maybe String
+  let text = decode response :: Maybe (M.Map String String)
   case text of
-      Just sth -> trace sth
+      Just sth -> trace (M.showTree sth)
       Nothing -> trace "nothing"
 
   where
