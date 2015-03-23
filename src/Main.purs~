@@ -2,15 +2,33 @@ module Main where
 
 import Data.Array (map)
 import Data.String (joinWith, length)
-
 import Control.Monad.Eff
 import Control.Monad.Cont.Trans
-
 import Network.HTTP.Client
-
 import Debug.Trace
+import Data.JSON
+import qualified Data.Map as M
+import Data.Maybe
 
-main = runContT (getResponseText purescript_org) trace
+--decode :: String -> Maybe(M.Map String String)
+
+data Quad = Quad { subject :: String
+               , predicate :: String
+               , object :: String
+               }
+{-
+instance u22FromJSON :: FromJSON u225 where
+    parseJSON (JObject o) = do
+        b1 <- o .:  "subject"
+        b2 <- o .: "predicate"
+        b3 <- o .: "object"
+        return $ Quad { subject: b1, predicate: b2, object: b3}
+    parseJSON _ = fail "u22 parse failed."
+-}
+
+
+main = decode (getResponseText purescript_org)
+
   where
   getResponseText req = responseToString <$> getAll req
 

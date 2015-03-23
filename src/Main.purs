@@ -12,13 +12,28 @@ import Data.Maybe
 
 --decode :: String -> Maybe(M.Map String String)
 
-main = trace "Hi"
---main = runContT (decodeText purescript_org) trace
+data Quad = Quad { subject :: String
+               , predicate :: String
+               , object :: String
+               }
 {-
-main = runContT (getResponseText purescript_org) trace
+instance u22FromJSON :: FromJSON u225 where
+    parseJSON (JObject o) = do
+        b1 <- o .:  "subject"
+        b2 <- o .: "predicate"
+        b3 <- o .: "object"
+        return $ Quad { subject: b1, predicate: b2, object: b3}
+    parseJSON _ = fail "u22 parse failed."
 -}
+
+
+main = runContT (getResponseText purescript_org) $ \response -> do
+  let text = decode response :: Maybe String
+  case text of
+      Just sth -> trace sth
+      Nothing -> trace "nothing"
+
   where
-  decodeText req = decode <$> getResponseText req
   getResponseText req = responseToString <$> getAll req
 
   responseToString :: Response -> String
