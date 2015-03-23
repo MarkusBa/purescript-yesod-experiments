@@ -5787,8 +5787,8 @@ var Data_String = require("Data.String");
 var Data_Array = require("Data.Array");
 var Control_Monad_Cont_Trans = require("Control.Monad.Cont.Trans");
 var Data_JSON = require("Data.JSON");
-var Debug_Trace = require("Debug.Trace");
 var Data_Map = require("Data.Map");
+var Debug_Trace = require("Debug.Trace");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var Data_Maybe = require("Data.Maybe");
 
@@ -5805,13 +5805,14 @@ var Data_Maybe = require("Data.Maybe");
  *         b3 <- o .: "object"
  *         return $ Quad { subject: b1, predicate: b2, object: b3}
  *     parseJSON _ = fail "u22 parse failed."
- * updateUI :: Maybe (M.Map String String) -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
+ * Cannot unify Control.Monad.Eff.DOM.Node with Prelude.Unit.
+ * updateUI :: String -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
  */
 var updateUI = function (json) {
     return function __do() {
         var _0 = Control_Monad_Eff_DOM.querySelector(".container")();
         if (_0 instanceof Data_Maybe.Just) {
-            return Control_Monad_Eff_DOM.setInnerHTML("Test")(_0.value0)();
+            return Control_Monad_Eff_DOM.setInnerHTML(json)(_0.value0)();
         };
         throw new Error("Failed pattern match");
     };
@@ -5830,15 +5831,18 @@ var main = (function () {
     };
     return Control_Monad_Cont_Trans.runContT(getResponseText(purescript_org))(function (response) {
         var text = Data_JSON.decode(Data_JSON.mapFromJSON(Data_JSON.stringFromJSON))(response);
-        return function __do() {
-            updateUI(text)();
+        var actualText = (function () {
             if (text instanceof Data_Maybe.Just) {
-                return Debug_Trace.trace(Data_Map.showTree(Prelude.showString)(Prelude.showString)(text.value0))();
+                return Data_Map.showTree(Prelude.showString)(Prelude.showString)(text.value0);
             };
             if (text instanceof Data_Maybe.Nothing) {
-                return Debug_Trace.trace("nothing")();
+                return "nothing";
             };
             throw new Error("Failed pattern match");
+        })();
+        return function __do() {
+            updateUI(actualText)();
+            return Debug_Trace.trace(actualText)();
         };
     });
 })();

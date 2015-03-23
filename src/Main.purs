@@ -26,17 +26,21 @@ instance u22FromJSON :: FromJSON u225 where
 -}
 
 --Cannot unify Control.Monad.Eff.DOM.Node with Prelude.Unit.
---updateUI :: Maybe (M.Map String String) -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
+--updateUI :: String -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
 updateUI json = do
     Just container <- querySelector ".container"
-    setInnerHTML "Test" container
+    
+
+    setInnerHTML json container
 
 main = runContT (getResponseText purescript_org) $ \response -> do
   let text = decode response :: Maybe (M.Map String String)
-  updateUI text
-  case text of
-      Just sth -> trace (M.showTree sth)
-      Nothing -> trace "nothing"
+  let actualText =  case text of
+        Just sth -> M.showTree sth
+        Nothing -> "nothing"
+  
+  updateUI actualText
+  trace actualText
 
   where
   getResponseText req = responseToString <$> getAll req
