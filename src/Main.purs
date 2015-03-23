@@ -12,6 +12,14 @@ import Data.Maybe
 import Control.Monad.Eff.DOM
 import Data.Array.Unsafe (tail)
 
+{-
+commands:
+pulp dep update
+pulp browserify --to Main.js
+or pulp run
+
+-}
+
 data Quad = Quad { subject :: String
                , predicate :: String
                , object :: String
