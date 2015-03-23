@@ -2416,12 +2416,13 @@ var Control_Monad_Cont_Trans = require("Control.Monad.Cont.Trans");
 var Debug_Trace = require("Debug.Trace");
 var Control_Monad_Eff = require("Control.Monad.Eff");
 var main = (function () {
-    var responseToString = function (_0) {
-        return Data_String.joinWith("")(Data_Array.map(Network_HTTP_Client.runChunk)(_0));
+    var responseToString = function (_3) {
+        return Data_String.joinWith("")(Data_Array.map(Network_HTTP_Client.runChunk)(_3));
     };
     var purescript_org = {
-        host: "jsonplaceholder.typicode.com", 
-        path: "/users"
+        host: "localhost", 
+        port: "3000", 
+        path: "/quadrest/1"
     };
     var getResponseText = function (req) {
         return Prelude["<$>"](Control_Monad_Cont_Trans.functorContT(Control_Monad_Eff.monadEff))(responseToString)(Network_HTTP_Client.getAll(req));
@@ -2443,7 +2444,7 @@ var Control_Monad_Eff = require("Control.Monad.Eff");
 var Control_Monad_Eff_Ref = require("Control.Monad.Eff.Ref");
 var Control_Monad_Trans = require("Control.Monad.Trans");
 var Control_Monad_Cont_Trans = require("Control.Monad.Cont.Trans");
-function getImpl(opts, more, done) {  return function() {    require('http').request(opts, function(res) {      res.setEncoding('utf8');      res.on('data', function (s) {        more(s)();      });      res.on('end', function () {        done();      });    }).end();  };};
+function getImpl(opts, more, done) {  return function() {    require('http').request(opts, function(res) {      res.on('data', function (s) {        more(s)();      });      res.on('end', function () {        done();      });    }).end();  };};
 var Request = function (x) {
     return x;
 };
@@ -2453,14 +2454,14 @@ var Chunk = function (x) {
 var Response = function (x) {
     return x;
 };
-var showChunk = new Prelude.Show(function (_323) {
-    return "Chunk " + Prelude.show(Prelude.showString)(_323);
+var showChunk = new Prelude.Show(function (_1) {
+    return "Chunk " + Prelude.show(Prelude.showString)(_1);
 });
-var showResponse = new Prelude.Show(function (_324) {
-    return "Response " + Prelude.show(Prelude.showArray(showChunk))(_324);
+var showResponse = new Prelude.Show(function (_2) {
+    return "Response " + Prelude.show(Prelude.showArray(showChunk))(_2);
 });
-var runChunk = function (_322) {
-    return _322;
+var runChunk = function (_0) {
+    return _0;
 };
 var getChunk = function (req) {
     return function (k) {
