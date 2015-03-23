@@ -9,14 +9,13 @@ import Debug.Trace
 import Data.JSON
 import qualified Data.Map as M
 import Data.Maybe
+import Control.Monad.Eff.DOM
 
---decode :: String -> Maybe(M.Map String String)
-
+{-
 data Quad = Quad { subject :: String
                , predicate :: String
                , object :: String
                }
-{-
 instance u22FromJSON :: FromJSON u225 where
     parseJSON (JObject o) = do
         b1 <- o .:  "subject"
@@ -26,9 +25,15 @@ instance u22FromJSON :: FromJSON u225 where
     parseJSON _ = fail "u22 parse failed."
 -}
 
+--Cannot unify Control.Monad.Eff.DOM.Node with Prelude.Unit.
+--updateUI :: Maybe (M.Map String String) -> forall eff. Eff (dom :: Control.Monad.Eff.DOM.DOM | eff) Unit
+updateUI json = do
+    Just container <- querySelector ".container"
+    setInnerHTML "Test" container
 
 main = runContT (getResponseText purescript_org) $ \response -> do
   let text = decode response :: Maybe (M.Map String String)
+  updateUI text
   case text of
       Just sth -> trace (M.showTree sth)
       Nothing -> trace "nothing"
